@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ETH Transaction Dashboard</title>
+  </head>
+  <body>
+    <form id="walletForm">
+      <input type="text" id="wallet" placeholder="Enter Wallet Address" />
+      <button type="submit">Search</button>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+      document
+        .getElementById("walletForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const wallet = document.getElementById("wallet").value;
+          getTransactions(wallet);
+        });
+
+      async function getTransactions(wallet) {
+        const response = await fetch(`/transactions/${wallet}`);
+        const { totalBought, totalSold, difference } = await response.json();
+
+        // Create a results string and color
+        let resultsString = `Total ETH Bought: ${totalBought}<br>
+                             Total ETH Sold: ${totalSold}<br>
+                             Difference: ${difference}`;
+
+        let color = "black";
+        if (difference > 0) {
+          color = "green";
+        } else if (difference < 0) {
+          color = "red";
+        }
+
+        // Then display the results
+        document.getElementById("results").innerHTML = resultsString;
+        document.getElementById("results").style.color = color;
+      }
+    </script>
+  </body>
+</html>
